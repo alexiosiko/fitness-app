@@ -24,13 +24,11 @@ export const styles = StyleSheet.create({
 		borderWidth: 1,
 	},
 	buttonDestructive: {
-		paddingLeft: 10,
-		paddingRight: 10,
-		alignSelf: 'center',
+		padding: 10,
 		borderRadius: 10,
+		alignSelf: 'center',
 		backgroundColor: colors.destructive,
 		color: colors.foreground,
-		textAlign: 'center',
 	},
 	title: {
 		color: colors.foreground,

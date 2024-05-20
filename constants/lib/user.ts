@@ -1,14 +1,41 @@
 import { Day, UserDataType } from "../types/user";
 
-export function getTodayData(userData: UserDataType): Day | undefined {
-	const date = new Date();
-	console.log(date);
+export function getTodayData(userData: UserDataType): Day {
+	const todaysDate = new Date();
+	let newDay: Day = {
+		activities: [],
+		date: new Date(),
+	}
 	userData.calendar.forEach(day => {
-		const todayYear = date.getFullYear();
-		const todayDay = date.getDay();
-		if (todayYear == day.date.getFullYear() &&
-		todayDay == day.date.getDay())
-			return day;
+		const newDate = new Date(day.date);
+		if (isSameDay(todaysDate, newDate)) {
+			newDay = {
+				activities: day.activities,
+				date: new Date(day.date)
+			};
+		}
 	})
-	return undefined;
+	// Return empty day cause there is none in DB
+	return newDay;
+}
+
+const isSameDay = (date1: Date, date2: Date): boolean => {
+	const date1day = date1.getDay();
+	const date1month = date1.getMonth();
+	const date1year = date1.getFullYear();
+
+	const date2day = date2.getDay();
+	const date2month = date2.getMonth();
+	const date2year = date2.getFullYear();
+
+	console.log(`${date1day} ${date1month} ${date1year} == ${date2day} ${date2month} ${date2year}`)
+	
+	if (date1day != date2day)
+		return false;
+	if (date1month != date2month)
+		return false;
+	if (date1year != date2year)
+		return false;
+
+	return true;
 }

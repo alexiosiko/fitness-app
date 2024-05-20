@@ -2,12 +2,13 @@ import Text from '@/components/ui/text'
 import { styles } from '@/constants/ui/styles'
 import { useSettings } from '@/components/state/settings';
 import React, { useState }  from 'react'
-import { TextInput, View } from 'react-native'
+import { Dimensions, TextInput, View } from 'react-native'
 import Button1 from '@/components/ui/button1';
 import axios from 'axios';
 import { useUser } from '@clerk/clerk-expo';
 
 export default function Settings() {
+
 	const [ dailyCalorieTarget, setDailyCalorieTarget] = useState<number>(1);
 	const { user } = useUser();
 	const handleOnDailyCalorieTargetChange = (value: string) => {
@@ -20,15 +21,12 @@ export default function Settings() {
 			return
 		}
 		try {
-			const url = process.env.EXPO_PUBLIC_API_DOMAIN + "/users/update";
-			console.log(url);
 			const res = await axios.put(process.env.EXPO_PUBLIC_API_DOMAIN + "/users/update", {
 				userId: user.id,
 				params: {
 					dailyCalorieTarget: dailyCalorieTarget
 				}
 			})
-			console.log(res.data);
 		} catch (e: any) {
 			console.error(e.message);
 		}

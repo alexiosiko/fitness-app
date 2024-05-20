@@ -5,7 +5,7 @@ import { useEffect, useState } from 'react'
 
 export default function useUserData() {
 	const [userData, setUserData] = useState<UserDataType | undefined>(undefined);
-	const [todayData, setTodayData] = useState<Day | undefined>(sampleTodayData);
+	const [todayData, setTodayData] = useState<Day | undefined>(undefined);
 	const [isFetching, setIsFetching] = useState<boolean>(false);
 	const getUserData = async () => {
 		setIsFetching(true);
@@ -15,17 +15,17 @@ export default function useUserData() {
 			});
 			if (res.status != 200)
 				throw Error("Could get user");
-			const user: UserDataType = res.data.user;
+			const user: UserDataType = JSON.parse(res.data.user);
 			setUserData(user);
-			// setTodayData(getTodayData(user));
+			setTodayData(getTodayData(user));
 		} catch (e: any) {
-			console.log(e.message);
+			console.log("Error");
 		} finally {
 			setIsFetching(false);
 		}
 	}
 	const getRemainingCalories = (): number | null => {
-		if (!userData || !todayData)
+		if (!userData || !todayData?.activities)
 			return null;
 		let remainingCalories = userData.dailyCalorieTarget;
 		todayData.activities.forEach((activity => remainingCalories -= activity.calories))
@@ -64,7 +64,8 @@ export default function useUserData() {
 		isFetching,
 		todayData,
 		getEatenCalories,
-		getBurnedCalories
+		getBurnedCalories,
+		setTodayData
 	}
 }
 

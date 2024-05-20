@@ -10,8 +10,8 @@ import Spinner from 'react-native-loading-spinner-overlay';
 const login = () => {
 	const { signIn, setActive, isLoaded } = useSignIn();
 
-	const [emailAddress, setEmailAddress] = useState('');
-	const [password, setPassword] = useState('');
+	const [emailAddress, setEmailAddress] = useState<string>(process.env.EXPO_PUBLIC_MY_EMAIL as string);
+	const [password, setPassword] = useState<string>(process.env.EXPO_PUBLIC_MY_PASSWORD as string);
 	const [loading, setLoading] = useState(false);
 
 	const onSignInPress = async () => {
@@ -53,7 +53,7 @@ const login = () => {
 				style={styles.inputField}
 			/>
 
-			<Button1 onPress={() => onSignInPress()} title='Sign In'></Button1>
+			<Button1 style={styles.button} onPress={() => onSignInPress()} title='Sign In'></Button1>
 			<Link href="/reset" asChild style={{ alignItems: 'center'}}>
 				<Pressable>
 					<Text>Forgot password?</Text>
