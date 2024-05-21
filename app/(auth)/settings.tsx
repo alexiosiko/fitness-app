@@ -2,12 +2,19 @@ import Text from '@/components/ui/text'
 import { styles } from '@/constants/ui/styles'
 import { useSettings } from '@/components/state/settings';
 import React, { useState }  from 'react'
-import { Dimensions, TextInput, View } from 'react-native'
+import { Keyboard, TextInput, View } from 'react-native'
 import Button1 from '@/components/ui/button1';
 import axios from 'axios';
 import { useUser } from '@clerk/clerk-expo';
+import DateTimePicker, { DateTimePickerEvent } from '@react-native-community/datetimepicker';
+import RNDateTimePicker from '@react-native-community/datetimepicker';
+import { colors } from '@/constants/ui/colors';
+import Toast from 'react-native-toast-message';
+
 
 export default function Settings() {
+	const [ date, setDate] = useState<Date | undefined>(new Date());
+	const [showDatePicker, setShowDatePicker] = useState<boolean>(false);
 
 	const [ dailyCalorieTarget, setDailyCalorieTarget] = useState<number>(1);
 	const { user } = useUser();
@@ -16,32 +23,59 @@ export default function Settings() {
    	 	setDailyCalorieTarget(Number(numericValue));
 	}
 	const handleUpdate = async () => {
-		if (user?.id == null){
+		if (user?.id == null) {
 			console.error("User id null");
 			return
 		}
 		try {
-			const res = await axios.put(process.env.EXPO_PUBLIC_API_DOMAIN + "/users/update", {
+			const res = await axios.put(process.env.EXPO_PUBLIC_API_DOMAIN + "/users/update-calorie-target", {
 				userId: user.id,
-				params: {
-					dailyCalorieTarget: dailyCalorieTarget
-				}
+				dailyCalorieTarget: dailyCalorieTarget
 			})
+			if (res.status == 200)
+				Toast.show({
+					type: 'error',
+					text1: "Successfully update calorie target :D",
+				})
+			else
+				throw Error(res.data.message);
 		} catch (e: any) {
-			console.error(e.message);
+			Toast.show({
+				type: 'error',
+				text1: "Could not update calories target",
+				text2: e.message
+			})
 		}
 	}
+	const handleOnChangeDate = (e: any, date: Date | undefined) => {
+		if (date)
+			setDate(date);
+	}
 	return (
-		<View>
-			<View>
-				<Text style={[styles.header,]}>Daily Calorie Target {dailyCalorieTarget}</Text>
-				<TextInput keyboardType='numeric'
-				onChangeText={handleOnDailyCalorieTargetChange}
-				value={dailyCalorieTarget.toString()}
-				placeholder='Enter value'
-				style={{ flexGrow: 1, borderWidth: 1, margin: 12, textAlign: 'center' }} />
+		<View onTouchStart={() => Keyboard.dismiss()} style={{ height: '100%', justifyContent: 'space-around', gap: 12, margin: 10}}>
+			<View style={{ gap: 12}}>
+				<RNDateTimePicker
+					themeVariant='light'
+					mode='date'
+					textColor='red'
+					accentColor={colors.primary}
+					onChange={handleOnChangeDate}
+					display='inline'
+					value={date!} />
 			</View>
-			<Button1 title='Update' onPress={() => handleUpdate()} />
+			<View style={{ gap: 12 }}>
+				<View>
+					<Text style={[styles.header, { marginBottom: 10}]}>Daily Calorie Target {dailyCalorieTarget}</Text>
+					<TextInput keyboardType='numeric'
+						onChangeText={handleOnDailyCalorieTargetChange}
+						value={dailyCalorieTarget.toString()}
+						placeholder='Enter value'
+						keyboardAppearance='dark'
+						style={styles.inputField} />
+				</View>
+				<Button1 style={[styles.button, { width: '100%'}]} title='Update Calories' onPress={() => handleUpdate()} />
+			</View>
+			<Toast />
 		</View>
 	)
 }

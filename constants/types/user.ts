@@ -1,8 +1,8 @@
 export type Day = {
 	date: Date,
-	activities: activity[]
+	activities: Activity[]
 }
-export type activity = {
+export type Activity = {
 	name: string,
 	calories: number,
 }

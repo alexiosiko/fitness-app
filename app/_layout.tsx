@@ -2,6 +2,8 @@ import { useEffect } from 'react';
 import * as SecureStore from 'expo-secure-store';
 import { ClerkProvider, useAuth } from '@clerk/clerk-expo';
 import { Slot, useRouter, useSegments } from 'expo-router';
+import Toast from 'react-native-toast-message';
+import { View } from 'react-native';
 
 const CLERK_PUBLISHABLE_KEY = process.env.EXPO_PUBLIC_CLERK_PUBLISHABLE_KEY;
 // Cache the Clerk JWT
@@ -41,14 +43,14 @@ const InitialLayout = () => {
 		}
 	}, [isSignedIn]);
 
-	return <Slot />;
+	return <Slot />
+
 };
 
 const RootLayoutNav = () => {
-	
 	return (
 		<ClerkProvider publishableKey={CLERK_PUBLISHABLE_KEY!} tokenCache={tokenCache}>
-				<InitialLayout />
+			<InitialLayout />
 		</ClerkProvider>
 	);
 };

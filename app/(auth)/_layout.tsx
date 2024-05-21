@@ -3,6 +3,7 @@ import { FontAwesome, Ionicons } from '@expo/vector-icons';
 import { Pressable } from 'react-native';
 import { useAuth } from '@clerk/clerk-expo';
 import { colors } from '@/constants/ui/colors';
+import Toast from 'react-native-toast-message';
 
 export const LogoutButton = () => {
 	const { signOut } = useAuth();

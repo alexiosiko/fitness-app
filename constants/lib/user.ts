@@ -27,8 +27,6 @@ const isSameDay = (date1: Date, date2: Date): boolean => {
 	const date2day = date2.getDay();
 	const date2month = date2.getMonth();
 	const date2year = date2.getFullYear();
-
-	console.log(`${date1day} ${date1month} ${date1year} == ${date2day} ${date2month} ${date2year}`)
 	
 	if (date1day != date2day)
 		return false;

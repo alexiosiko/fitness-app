@@ -2,6 +2,7 @@ import { getTodayData } from '@/constants/lib/user';
 import { Day, UserDataType } from '@/constants/types/user';
 import axios from 'axios';
 import { useEffect, useState } from 'react'
+import Toast from 'react-native-toast-message';
 
 export default function useUserData() {
 	const [userData, setUserData] = useState<UserDataType | undefined>(undefined);
@@ -19,7 +20,11 @@ export default function useUserData() {
 			setUserData(user);
 			setTodayData(getTodayData(user));
 		} catch (e: any) {
-			console.log("Error");
+			Toast.show({
+				type: 'error',
+				text1: "Error",
+				text2: "Error getting user data :("
+			})
 		} finally {
 			setIsFetching(false);
 		}
@@ -51,13 +56,15 @@ export default function useUserData() {
 		}))
 		return burnedCalories ;//userData.dailyCalorieTarget - userData.eaten + userData.burned;
 	}
+
 	useEffect(() => {
 		if (isFetching)
 			return;
 		if (userData)
 			return;
 		getUserData();
-	})
+	}, [])
+	
  	return {
 		userData,
 		getRemainingCalories,

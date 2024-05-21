@@ -6,7 +6,7 @@ export const colors = {
 	navforegroud: "#fff",
     primary: "#43b80F",
     primaryforeground: "#fff",
-    secondary: "#000",
+    secondary: "#777",
     secondaryforeground: "#fff",
     accent: "#384E77",
     accentforeground: "#384E77",

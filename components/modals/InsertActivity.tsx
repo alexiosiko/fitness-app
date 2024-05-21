@@ -1,10 +1,11 @@
 import { styles } from '@/constants/ui/styles'
 import React, { useState } from 'react'
-import { Modal, Dimensions, View, TextInput, Button, SafeAreaView } from 'react-native'
+import { Modal, Dimensions, View, TextInput, Button, SafeAreaView, Keyboard } from 'react-native'
 import Button1 from '../ui/button1'
 import Text from '../ui/text'
 import axios from 'axios'
-import { UserDataType, activity as Activity, Day } from '@/constants/types/user'
+import { UserDataType, Activity as Activity, Day } from '@/constants/types/user'
+import Toast from 'react-native-toast-message'
 
 export type ModalDataType = {
 	visible: boolean,
@@ -27,11 +28,19 @@ export default function InsertActivity({ modalData, setModalData, userData, setT
 	}
 	const valideActivityData = (): boolean => {
 		if (userData == undefined) {
-			console.error("User is undefined");
+			Toast.show({
+				type: 'error',
+				text1: "Could not get user data",
+				text2: "Try sign out and sign again, or contact support"
+			})
 			return false;
 		}
 		if (name == ""){ 
-			console.error("Enter name");
+			Toast.show({
+				type: 'error',
+				text1: "Enter a name",
+				text2: "Try sign out and sign again, or contact support"
+			})
 			return false;
 		}
 		if (calories == null) {
@@ -51,7 +60,7 @@ export default function InsertActivity({ modalData, setModalData, userData, setT
 				name: name
 			}
 			console.log(activity);
-			const res = await axios.put(process.env.EXPO_PUBLIC_API_DOMAIN + "/users/activity", {
+			const res = await axios.put(process.env.EXPO_PUBLIC_API_DOMAIN + "/users/activities/", {
 				userId: userData!.userId,
 				activity: activity
 			})
@@ -82,12 +91,13 @@ export default function InsertActivity({ modalData, setModalData, userData, setT
 	}
 	  return (
 	<Modal
-		style={{ height: 200 }}
+		style={{ height: 200, zIndex: -5 }}
 		animationType="slide"
 		visible={modalData.visible}
 	>
 		<SafeAreaView
-			style={{ margin: 4 }} >
+		onTouchStart={() => Keyboard.dismiss()}
+		 style={{ margin: 10, marginTop: '3%', gap: 20,height: "100%" }}>
 			<Text style={styles.header}>Add New {modalData.title}</Text>
 			<TextInput
 				onChangeText={setName}
