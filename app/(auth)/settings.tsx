@@ -13,9 +13,7 @@ import Toast from 'react-native-toast-message';
 
 
 export default function Settings() {
-	const [ date, setDate] = useState<Date | undefined>(new Date());
-	const [showDatePicker, setShowDatePicker] = useState<boolean>(false);
-
+	const { selectedDate, setSelectedDate } = useSettings() as any;
 	const [ dailyCalorieTarget, setDailyCalorieTarget] = useState<number>(1);
 	const { user } = useUser();
 	const handleOnDailyCalorieTargetChange = (value: string) => {
@@ -49,7 +47,7 @@ export default function Settings() {
 	}
 	const handleOnChangeDate = (e: any, date: Date | undefined) => {
 		if (date)
-			setDate(date);
+			setSelectedDate(date);
 	}
 	return (
 		<View onTouchStart={() => Keyboard.dismiss()} style={{ height: '100%', justifyContent: 'space-around', gap: 12, margin: 10}}>
@@ -61,7 +59,7 @@ export default function Settings() {
 					accentColor={colors.primary}
 					onChange={handleOnChangeDate}
 					display='inline'
-					value={date!} />
+					value={selectedDate!} />
 			</View>
 			<View style={{ gap: 12 }}>
 				<View>

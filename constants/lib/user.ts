@@ -19,7 +19,7 @@ export function getTodayData(userData: UserDataType): Day {
 	return newDay;
 }
 
-const isSameDay = (date1: Date, date2: Date): boolean => {
+export const isSameDay = (date1: Date, date2: Date): boolean => {
 	const date1day = date1.getDay();
 	const date1month = date1.getMonth();
 	const date1year = date1.getFullYear();

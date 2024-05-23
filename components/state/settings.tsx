@@ -2,6 +2,6 @@
 import { create } from 'zustand';
 
 export const useSettings = create((set) => ({
-  dailyCalorieTarget: 0,
-  setDailyCalorieTarget: (newTarget: number) => set({ dailyCalorieTarget: newTarget }),
+  selectedDate: new Date(),
+  setSelectedDate: (newDate: Date) => set({ selectedDate: newDate }),
 }));

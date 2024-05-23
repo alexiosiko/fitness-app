@@ -1,6 +1,8 @@
+import useModal from '@/components/hooks/useModal';
 import useUserData from '@/components/hooks/useUserData';
 import EditActivity from '@/components/modals/EditActivity';
 import InsertActivity, { ModalDataType } from '@/components/modals/InsertActivity';
+import { useSettings } from '@/components/state/settings';
 import Button1 from '@/components/ui/button1';
 import Text from '@/components/ui/text'
 import { colors } from '@/constants/ui/colors';
@@ -16,33 +18,16 @@ export type ModalEditDateType = {
 
 export default function Home() {
 	const { userData, isFetching, todayData, setTodayData, getEatenCalories, getBurnedCalories, getRemainingCalories } = useUserData();
-	const [modalActivityData, setActivityModalData] = useState<ModalDataType>({
-		title: '',
-		visible: false,
-	});
-	const [modalEditData, setEditModalData] = useState<ModalEditDateType>({
-		visible: false,
-		index: -1
-	});
-
-	const handleOnModal = (name: string) => {
-		setActivityModalData({
-			visible: true,
-			title: name,
-		})
-	}
-	const handleEditActivity = (index: number) => {
-		setEditModalData({
-			visible: true,
-			index: index
-		})
-	}
-
+	const { handleEditActivity, modalActivityData, handleOnModal, setActivityModalData, modalEditData, setEditModalData } = useModal();
+	const { selectedDate, setSelectedDate } = useSettings() as any;
 
 	return (
 		<View style={{ alignItems: 'center', gap: 24, margin: 10}}>
+			<Text>
+				selecteddata: {selectedDate?.toDateString()}
+			</Text>
 			<Text>Daily Calorie Target: {userData ? userData?.dailyCalorieTarget : <ActivityIndicator /> }</Text>
-			<Text>{todayData?.date ? todayData.date.toDateString() : <ActivityIndicator /> }</Text>
+			{/* <Text>{todayData?.date ? todayData.date.toDateString() : <ActivityIndicator /> }</Text> */}
 			<View style={{ flexDirection: 'row', width: '100%', justifyContent: 'space-around', height: 150, alignItems: 'center' }}>
 				<View>
 					<Text style={styles.header}>{todayData ? getEatenCalories(): <ActivityIndicator />}</Text>

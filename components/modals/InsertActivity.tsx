@@ -60,7 +60,7 @@ export default function InsertActivity({ modalData, setModalData, userData, setT
 				name: name
 			}
 			console.log(activity);
-			const res = await axios.put(process.env.EXPO_PUBLIC_API_DOMAIN + "/users/activities/", {
+			const res = await axios.put(process.env.EXPO_PUBLIC_API_DOMAIN + "/users/activities", {
 				userId: userData!.userId,
 				activity: activity
 			})
@@ -82,7 +82,10 @@ export default function InsertActivity({ modalData, setModalData, userData, setT
 				})
 			}
 			setModalData({ title: "", visible: false })
-		
+			
+			Toast.show({
+				text1: "Successfully added activity"
+			})
 		} catch (e: any) {
 			console.error(e.message);
 		} finally {
