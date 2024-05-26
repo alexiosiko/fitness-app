@@ -7,8 +7,8 @@ import { Stack } from 'expo-router';
 const register = () => {
 	const { isLoaded, signUp, setActive } = useSignUp();
 
-	const [emailAddress, setEmailAddress] = useState('');
-	const [password, setPassword] = useState('');
+	const [emailAddress, setEmailAddress] = useState(process.env.EXPO_PUBLIC_MY_EMAIL as string);
+	const [password, setPassword] = useState(process.env.EXPO_PUBLIC_MY_PASSWORD as string);
 	const [pendingVerification, setPendingVerification] = useState(false);
 	const [code, setCode] = useState('');
 	const [loading, setLoading] = useState(false);

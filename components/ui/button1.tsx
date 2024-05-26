@@ -10,7 +10,7 @@ export default function Button1({ onPress, title, style }: {
 	style?: StyleProp<ViewStyle>
 }) {
   return (
-		<Pressable onPress={onPress} style={style}>
+		<Pressable onPress={onPress} style={[style]}>
 			<Text style={{ textAlign: 'center', color: colors.primaryforeground }}>{title}</Text>
 		</Pressable>
   )

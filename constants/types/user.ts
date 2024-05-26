@@ -10,5 +10,5 @@ export type UserDataType = {
 	_id: string,
 	userId: string,
 	dailyCalorieTarget: number,
-	calendar: Day[]
+	days: Day[]
 }

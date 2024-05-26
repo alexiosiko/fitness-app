@@ -6,7 +6,6 @@ import { Keyboard, TextInput, View } from 'react-native'
 import Button1 from '@/components/ui/button1';
 import axios from 'axios';
 import { useUser } from '@clerk/clerk-expo';
-import DateTimePicker, { DateTimePickerEvent } from '@react-native-community/datetimepicker';
 import RNDateTimePicker from '@react-native-community/datetimepicker';
 import { colors } from '@/constants/ui/colors';
 import Toast from 'react-native-toast-message';
@@ -15,6 +14,7 @@ import Toast from 'react-native-toast-message';
 export default function Settings() {
 	const { selectedDate, setSelectedDate } = useSettings() as any;
 	const [ dailyCalorieTarget, setDailyCalorieTarget] = useState<number>(1);
+	const [ showCalendar, setShowCalendar] = useState<boolean>(false);
 	const { user } = useUser();
 	const handleOnDailyCalorieTargetChange = (value: string) => {
 		const numericValue = value.replace(/[^0-9]/g, '');
@@ -52,14 +52,15 @@ export default function Settings() {
 	return (
 		<View onTouchStart={() => Keyboard.dismiss()} style={{ height: '100%', justifyContent: 'space-around', gap: 12, margin: 10}}>
 			<View style={{ gap: 12}}>
-				<RNDateTimePicker
+				<Button1  title='Change Datesadsa' onPress={() => setShowCalendar(true)}/>
+				{showCalendar && <RNDateTimePicker
 					themeVariant='light'
 					mode='date'
 					textColor='red'
 					accentColor={colors.primary}
+					
 					onChange={handleOnChangeDate}
-					display='inline'
-					value={selectedDate!} />
+					value={selectedDate!} /> }
 			</View>
 			<View style={{ gap: 12 }}>
 				<View>
