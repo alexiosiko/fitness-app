@@ -6,9 +6,11 @@ import Text from '../ui/text'
 import axios from 'axios'
 import { UserDataType, Activity as Activity, Day } from '@/constants/types/user'
 import Toast from 'react-native-toast-message'
+import { colors } from '@/constants/ui/colors'
 
 export type ModalDataType = {
 	title: string,
+	isFood: boolean
 }
 
 export default function InsertActivity({ insertActivityModalData, userData, getUserData, selectedDate: selectedDate, setInsertActivityModalData: setModalData }: {
@@ -30,7 +32,7 @@ export default function InsertActivity({ insertActivityModalData, userData, getU
 			calories = 0;
 		setActivity({ name: activity.name, calories: calories });
 }
-	const isValidForm = (): boolean => {
+	const validateForm = () => {
 		if (userData == undefined) 
 			throw Error("Could not get user data")
 		if (activity.name == "")
@@ -39,13 +41,14 @@ export default function InsertActivity({ insertActivityModalData, userData, getU
 			throw Error("Calories cannot be 0")
 		if (selectedDate == undefined)
 			console.error("Selected date is undefined");
-		return true;
 	}
 	const handleInsertActivity = async () => {
 		setFetching(true);
 		try {
-			if (!isValidForm())
-				return
+			validateForm()
+
+			if (!insertActivityModalData.isFood)
+				activity.calories *= -1;
 
 			const res = await axios.put(process.env.EXPO_PUBLIC_API_DOMAIN + "/users/activities", {
 				userId: userData!.userId,
@@ -70,34 +73,37 @@ export default function InsertActivity({ insertActivityModalData, userData, getU
 	}
 	  return (
 	<Modal
-		style={{ height: 200, zIndex: -5 }}
+		presentationStyle='pageSheet'
 		animationType="slide"
 		visible={insertActivityModalData != undefined}
-	>
+		>
 		<SafeAreaView
 		onTouchStart={() => Keyboard.dismiss()}
-		 style={{ margin: 10, marginTop: '10%', gap: 20,height: "100%" }}>
-			<Text style={[styles.header, { marginBottom: '10%' }]}>Add New Activity</Text>
-			<Text>Action Name</Text>
-			<TextInput
-				onChangeText={name => setActivity({ name: name, calories: activity.calories })}
-				value={activity.name}
+		 style={{ height: "100%", width: '100%', backgroundColor: colors.background }}>
+			<View style={{ margin: 10, gap: 20 }}>
+				<Text style={[styles.header, { marginBottom: '10%' }]}>Add New Activity</Text>
+				<Text>{insertActivityModalData.isFood ? "Food Name" : "Exercise Name"}</Text>
+				<TextInput
+					onChangeText={name => setActivity({ name: name, calories: activity.calories })}
+					value={activity.name}
+					style={styles.inputField}
+					placeholderTextColor='lightgray'
+					placeholder={`${insertActivityModalData.title} Name`}
+				/>
+				<Text>{insertActivityModalData.isFood ? "Calories Gained" : "Calories Burned"}</Text>
+				<TextInput
 				style={styles.inputField}
-				placeholder={`${insertActivityModalData.title} Name`}
-			/>
-			<Text>Calories gained</Text>
-			<TextInput
-			style={styles.inputField}
-				placeholder="Enter Calories"
-				keyboardType="numbers-and-punctuation"
-				value={activity.calories?.toString()}
-				onChangeText={handleOnDailyCalorieTargetChange}
-			/>
-			<View style={{ flexDirection: 'row', gap: 4, justifyContent: 'center'}}>
-				<Button1 style={[styles.buttonDestructive, { width: '45%'}]} title="Cancel" onPress={() => setModalData(undefined)} />
-				<Button1 style={[styles.button, { width: '45%'}]} title="Add" onPress={() => handleInsertActivity()}  />
+					placeholder="Enter Calories"
+					keyboardType="numbers-and-punctuation"
+					value={activity.calories?.toString().replace('-', '')}
+					onChangeText={handleOnDailyCalorieTargetChange}
+				/>
+				<View style={{ flexDirection: 'row', gap: 4, justifyContent: 'center'}}>
+					<Button1 style={[styles.buttonDestructive, { width: '45%'}]} title="Cancel" onPress={() => setModalData(undefined)} />
+					<Button1 style={[styles.button, { width: '45%'}]} title="Add" onPress={() => handleInsertActivity()}  />
+				</View>
 			</View>
-			</SafeAreaView>
+		</SafeAreaView>
 		<Toast />
 	</Modal>
   )

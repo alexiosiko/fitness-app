@@ -7,10 +7,12 @@ import Text from '../ui/text'
 import axios from 'axios'
 import Toast from 'react-native-toast-message'
 import { FontAwesome } from '@expo/vector-icons'
+import { colors } from '@/constants/ui/colors'
 
 
 export type ModalEditDateType = {
-	index: number
+	index: number,
+	isFood: boolean
 }
 
 export default function EditActivity({ getUserData, modalData, setModalData, userData, selectedDayData }: {
@@ -23,6 +25,7 @@ export default function EditActivity({ getUserData, modalData, setModalData, use
 	if (!modalData || !selectedDayData)
 		return;
 	const [activity, setActivity] = useState<Activity>(selectedDayData.activities[modalData.index])
+	const [isFetching, setIsFetching] = useState<boolean>(false);
 	const handleDelete = async () => {
 		try {
 			const res = await axios.post(process.env.EXPO_PUBLIC_API_DOMAIN + '/users/activities/delete', {
@@ -35,7 +38,7 @@ export default function EditActivity({ getUserData, modalData, setModalData, use
 				throw Error(res.data.message)
 
 			Toast.show({
-				text1: "Updated activity :D",
+				text1: "Deleted activity :D",
 				text2: res.data.message,
 			})
 
@@ -51,26 +54,29 @@ export default function EditActivity({ getUserData, modalData, setModalData, use
 			})
 		}
 	}
+	const validateForm =  () => {
+		if (activity.name == "") 
+			throw Error("Name cannot be empty")
+		if (activity.name == null)
+			throw Error("Name cannot be null")
+		if (userData?.userId == undefined) 
+			throw Error("User Id is undefined");
+		if (selectedDayData?.date == undefined) 
+			throw Error("TodayData is undefined");
+	}
 	const handleUpdateActivity = async () => {
-		if (activity.name == "") {
-			console.error("Name cannot be empty")
+		if (isFetching)
 			return;
-		}
-		if (activity.name == null) {
-			console.error("Name cannot be null")
-			return;
-		}
+		setIsFetching(true);
+		
 		try {
-			if (userData?.userId == undefined) {
-				console.error("User Id is undefined");
-				return;
-			}
-			if (selectedDayData?.date == undefined) {
-				console.error("TodayData is undefined");
-				return;
-			}
+			validateForm();
+
+			if (!modalData.isFood)
+				activity.calories *= -1;
+
 			const res = await axios.put(process.env.EXPO_PUBLIC_API_DOMAIN + "/users/activities/update", {
-				userId: userData.userId,
+				userId: userData!.userId,
 				activity: activity,
 				selectedDate: selectedDayData.date,
 				activityIndex: modalData.index 
@@ -90,6 +96,8 @@ export default function EditActivity({ getUserData, modalData, setModalData, use
 				text1: `Error`,
 				text2: e.message,
 			})
+		} finally {
+			setIsFetching(false);
 		}
 	}
 	const handleOnChangeCalories = (str: string) => {
@@ -107,27 +115,33 @@ export default function EditActivity({ getUserData, modalData, setModalData, use
   return (
 	<Modal 	
 		animationType="slide"
+		style={{ backgroundColor: colors.background }}
 		visible={modalData != undefined}>
-		<SafeAreaView onTouchStart={() => Keyboard.dismiss()} style={{ margin: 10, justifyContent: 'flex-start', gap: 20,height: "100%" }}>
-			<View style={{ flexDirection: 'row', position: 'relative' }}>
-				<Text style={[styles.header, { marginRight: 'auto', marginLeft: 'auto' }]}>Edit Activity</Text>
-				<FontAwesome style={{ position: 'absolute', top: 0, right: 0}} name='trash' size={32} onPress={() => handleDelete()} />
-			</View>
-			<TextInput
-				onChangeText={(value) => setActivity({ name:  value, calories: activity.calories})}
-				value={activity.name}
-				style={styles.inputField}
-			/>
-			<TextInput
-			style={[styles.inputField]}
-				placeholder="Enter Calories"
-				keyboardType="numbers-and-punctuation"
-				value={activity.calories?.toString()}
-				onChangeText={(value) => handleOnChangeCalories(value)}
-			/>
-			<View style={{ flexDirection: 'row', gap: 4, justifyContent: 'center'}}>
-				<Button1 style={[styles.buttonDestructive, { width: '45%'}]} title="Cancel" onPress={() => setModalData(undefined)} />
-				<Button1 style={[styles.button, { width: '45%'}]} title="Update" onPress={() => handleUpdateActivity()}  />
+		<SafeAreaView onTouchStart={() => Keyboard.dismiss()} 
+			style={{ height: "100%", width: '100%', backgroundColor: colors.background }}>
+			<View style={{ margin: 10, gap: 20 }}>
+				<View style={{ flexDirection: 'row', position: 'relative' }}>
+					<Text style={[styles.header, { marginRight: 'auto', marginLeft: 'auto' }]}>Edit Activity</Text>
+					<FontAwesome disabled={isFetching} style={{ position: 'absolute', top: 0, right: 0}} name='trash' size={32} onPress={() => handleDelete()} />
+				</View>
+				<TextInput
+					onChangeText={(value) => setActivity({ name:  value, calories: activity.calories})}
+					placeholderTextColor='lightgray'
+					value={activity.name}
+					style={styles.inputField}
+				/>
+				<Text>{modalData.isFood ? "Calories Gained" : "Calories Burned"}</Text>
+				<TextInput
+				style={[styles.inputField]}
+					placeholder="Enter Calories"
+					keyboardType="numbers-and-punctuation"
+					value={activity.calories?.toString().replace('-', '')}
+					onChangeText={(value) => handleOnChangeCalories(value)}
+				/>
+				<View style={{ flexDirection: 'row', gap: 4, justifyContent: 'center'}}>
+					<Button1 disabled={isFetching} style={[styles.buttonDestructive, { width: '45%'}]} title="Cancel" onPress={() => setModalData(undefined)} />
+					<Button1 disabled={isFetching} style={[styles.button, { width: '45%'}]} title="Update" onPress={() => handleUpdateActivity()}  />
+				</View>
 			</View>
 		</SafeAreaView>
 		<Toast />

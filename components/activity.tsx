@@ -11,7 +11,7 @@ export default function ActivityComponent({ activity, index, setEditActivityModa
 	setEditActivityModalData: React.Dispatch<React.SetStateAction<ModalEditDateType | undefined>>
 }) {
 	return (
-		<Pressable onPress={() => setEditActivityModalData({ index: index })} 
+		<Pressable onPress={() => setEditActivityModalData({ index: index, isFood: activity.calories > 0 })} 
 			style={localStyles.container}>
 			<Text>{activity.name}</Text>
 			<Text style={{ color: activity.calories > 0 ? colors.destructive : colors.primary }}>{Math.abs(activity.calories)}</Text>
@@ -32,6 +32,6 @@ const localStyles = StyleSheet.create({
 		paddingLeft: 12,
 		marginBottom: 10,
 		paddingRight: 12,
-		backgroundColor: colors.background
+		backgroundColor: colors.backgroundother
 	}
 })

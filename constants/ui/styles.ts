@@ -37,7 +37,6 @@ export const styles = StyleSheet.create({
 		textAlign: 'center',
 	},
 	header: {
-		color: colors.foreground,
 		fontSize: 30,
 		textAlign: 'center',
 	},

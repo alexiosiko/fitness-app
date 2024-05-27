@@ -34,7 +34,10 @@
 	  [
         "expo-font",
         {
-          "fonts": ["./assets/fonts/Roboto-Regular.ttf"]
+          "fonts": [
+			"./assets/fonts/SpaceMono-Regular.ttf",
+			"./assets/fonts/Salsa-Regular.ttf"
+		]
         }
       ]
     ],

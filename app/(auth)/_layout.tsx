@@ -4,7 +4,9 @@ import { Pressable } from 'react-native';
 import { useAuth } from '@clerk/clerk-expo';
 import { colors } from '@/constants/ui/colors';
 import Toast from 'react-native-toast-message';
-
+import { AntDesign } from '@expo/vector-icons';
+import { Feather } from '@expo/vector-icons';
+import { Octicons } from '@expo/vector-icons';
 export const LogoutButton = () => {
 	const { signOut } = useAuth();
 
@@ -24,6 +26,9 @@ const TabsPage = () => {
 
 	return (
 		<Tabs screenOptions={{
+			tabBarStyle: {
+				backgroundColor: colors.navbackground
+			},
 			headerStyle: {
 				backgroundColor: colors.background,
 			},
@@ -32,16 +37,26 @@ const TabsPage = () => {
 		  <Tabs.Screen
 			name="settings"
 			options={{
+				headerTitleAlign: 'center',
+				tabBarIconStyle: {
+					top: 8,
+				},
 				title: 'Settings',
-				tabBarIcon: ({ color }) => <FontAwesome size={28} name="gear" color={color} />,
+				tabBarLabel: '',
+				tabBarIcon: ({ color }) => <Octicons name="gear" size={32} color="black" />,
 			}}
 			redirect={!isSignedIn}
 		  />
 			<Tabs.Screen
 			  name="home"
 			  options={{
+				headerTitleAlign: 'center',
+				tabBarIconStyle: {
+					top: 8,
+				},
 				title: 'Home',
-				tabBarIcon: ({ color }) => <FontAwesome size={28} name="home" color={color} />,
+				tabBarLabel: '',
+				tabBarIcon: ({ color }) => <Octicons name="home" size={32} color="black" />,
 			  }}
 			  redirect={!isSignedIn}
 			/>
