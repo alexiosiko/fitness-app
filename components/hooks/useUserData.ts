@@ -47,7 +47,8 @@ export default function useUserData() {
 		});
 		if (dayData == undefined) {
 			dayData = {
-				activities: [],
+				exercises: [],
+				foods: [],
 				date: new Date()
 			};
 		}
@@ -55,19 +56,19 @@ export default function useUserData() {
 	}
 	
 	const getRemainingCalories = (day: Day): number | null => {
-		if (!userData || !day?.activities)
+		if (!userData || !day?.foods)
 			return null;
 		let remainingCalories = userData.dailyCalorieTarget;
-		day.activities.forEach((activity => remainingCalories -= activity.calories))
+		day.foods.forEach((food => remainingCalories -= food.calories))
+		day.exercises.forEach(exercise => remainingCalories += exercise.calories);
 		return remainingCalories; //userData.dailyCalorieTarget - userData.eaten + userData.burned;
 	}
 	const getEatenCalories = (day: Day): number | null => {
 		if (!userData || !day)
 			return null;
 		let eatenCalories = 0;
-		day.activities.forEach((activity => {
-			if (activity.calories > 0)
-				eatenCalories += activity.calories
+		day.foods.forEach((activity => {
+			eatenCalories += activity.calories
 		}))
 		return eatenCalories ;//userData.dailyCalorieTarget - userData.eaten + userData.burned;
 	}
@@ -75,9 +76,8 @@ export default function useUserData() {
 		if (!userData || !day)
 			return null;
 		let burnedCalories = 0;
-		day.activities.forEach((activity => {
-			if (activity.calories < 0)
-				burnedCalories -= activity.calories
+		day.exercises.forEach((exercise => {
+			burnedCalories += exercise.calories
 		}))
 		return burnedCalories ;//userData.dailyCalorieTarget - userData.eaten + userData.burned;
 	}
@@ -86,7 +86,7 @@ export default function useUserData() {
 		if (isFetching)
 			return;
 		getUserData();
-	}, [selectedDate])
+	}, [])
 	
 
 	useEffect(() => {
@@ -107,20 +107,3 @@ export default function useUserData() {
 }
 
 
-const sampleTodayData: Day = {
-	activities: [ 
-		{
-			calories: 200,
-			name: 'strawberries'
-		},
-		{
-			calories: -500,
-			name: 'running'
-		},
-		{
-			calories: 1200,
-			name: 'burger'
-		},
-	],
-	date: new Date(),
-}

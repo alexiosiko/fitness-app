@@ -1,4 +1,3 @@
-import { Day, UserDataType, Activity } from '@/constants/types/user'
 import React, { useEffect, useState } from 'react'
 import { Keyboard, Modal, SafeAreaView, TextInput, View } from 'react-native'
 import Button1 from '../ui/button1'
@@ -8,6 +7,7 @@ import axios from 'axios'
 import Toast from 'react-native-toast-message'
 import { FontAwesome } from '@expo/vector-icons'
 import { colors } from '@/constants/ui/colors'
+import { Day, Food, UserDataType } from '@/constants/types/user'
 
 
 export type ModalEditDateType = {
@@ -15,22 +15,27 @@ export type ModalEditDateType = {
 	isFood: boolean
 }
 
-export default function EditActivity({ getUserData, modalData, setModalData, userData, selectedDayData }: {
-	modalData: ModalEditDateType | undefined,
+export default function EditFood({ getUserData, setShowEditModal,  index, userData, selectedDayData }: {
+	index: number,
 	userData: UserDataType | undefined,
-	setModalData: React.Dispatch<React.SetStateAction<ModalEditDateType | undefined>>,
 	getUserData: () => Promise<void>,
-	selectedDayData: Day | undefined
+	selectedDayData: Day | undefined,
+	setShowEditModal:  React.Dispatch<React.SetStateAction<boolean>>
 }) {
-	if (!modalData || !selectedDayData)
+	if (!selectedDayData)
 		return;
-	const [activity, setActivity] = useState<Activity>(selectedDayData.activities[modalData.index])
+	
+	const [food, setFood] = useState<Food>(selectedDayData.foods[index])
 	const [isFetching, setIsFetching] = useState<boolean>(false);
 	const handleDelete = async () => {
+		if (isFetching)
+			return;
+		setIsFetching(false);
 		try {
-			const res = await axios.post(process.env.EXPO_PUBLIC_API_DOMAIN + '/users/activities/delete', {
+			const res = await axios.put(process.env.EXPO_PUBLIC_API_DOMAIN + '/users/foods/delete', {
 				userId: userData?.userId,
-				activity: activity,
+				foodIndex: index,
+				food: food,
 				selectedDate: selectedDayData.date,
 
 			});
@@ -45,19 +50,20 @@ export default function EditActivity({ getUserData, modalData, setModalData, use
 			// Re-fetch
 			getUserData();
 
-			setModalData(undefined)
 		} catch (e: any) {
 			Toast.show({
 				type: "error",
 				text1: "Error :(",
 				text2: e.message,
 			})
+		} finally {
+			setIsFetching(false);
 		}
 	}
 	const validateForm =  () => {
-		if (activity.name == "") 
+		if (food.name == "") 
 			throw Error("Name cannot be empty")
-		if (activity.name == null)
+		if (food.name == null)
 			throw Error("Name cannot be null")
 		if (userData?.userId == undefined) 
 			throw Error("User Id is undefined");
@@ -72,24 +78,22 @@ export default function EditActivity({ getUserData, modalData, setModalData, use
 		try {
 			validateForm();
 
-			if (!modalData.isFood)
-				activity.calories *= -1;
-
-			const res = await axios.put(process.env.EXPO_PUBLIC_API_DOMAIN + "/users/activities/update", {
+			console.log(process.env.EXPO_PUBLIC_API_DOMAIN + "/users/foods/update");
+			const res = await axios.put(process.env.EXPO_PUBLIC_API_DOMAIN + "/users/foods/update", {
 				userId: userData!.userId,
-				activity: activity,
+				food: food,
 				selectedDate: selectedDayData.date,
-				activityIndex: modalData.index 
+				foodIndex: index 
 			})
 			if (res.status != 200)
 				throw Error("Couldn't update activity");
 
 			// Re-fetch
-			getUserData()
 			Toast.show({
 				text1: "Updated activity :D",
 			})
-			setModalData(undefined)
+			getUserData()
+			setShowEditModal(false)
 		} catch (e: any) {
 			Toast.show({
 				type: 'error',
@@ -100,46 +104,56 @@ export default function EditActivity({ getUserData, modalData, setModalData, use
 			setIsFetching(false);
 		}
 	}
-	const handleOnChangeCalories = (str: string) => {
+	const handleCalorieChange = (str: string) => {
 		let calories = Number(str);
 		if (isNaN(calories))
 			calories = 0;
-		setActivity({ name:  activity.name, calories: calories })
+		setFood({  ...food, calories: calories })
+	}
+	const handleProteinChange = (str: string) => {
+		let protein = Number(str);
+		if (isNaN(protein))
+			protein = 0;
+		setFood({  ...food, protein: protein })
 	}
 	useEffect(() => {
-		setActivity({
-			calories: selectedDayData?.activities[modalData.index]?.calories || -1,
-			name: selectedDayData?.activities[modalData.index]?.name || ""
-		})
-	}, [modalData])
+		setFood(selectedDayData.foods[index])
+	}, [index])
   return (
 	<Modal 	
 		animationType="slide"
-		style={{ backgroundColor: colors.background }}
-		visible={modalData != undefined}>
+		style={{ backgroundColor: colors.background }}>
 		<SafeAreaView onTouchStart={() => Keyboard.dismiss()} 
 			style={{ height: "100%", width: '100%', backgroundColor: colors.background }}>
 			<View style={{ margin: 10, gap: 20 }}>
 				<View style={{ flexDirection: 'row', position: 'relative' }}>
-					<Text style={[styles.header, { marginRight: 'auto', marginLeft: 'auto' }]}>Edit Activity</Text>
+					<Text style={[styles.header, { marginRight: 'auto', marginLeft: 'auto' }]}>Edit Food</Text>
 					<FontAwesome disabled={isFetching} style={{ position: 'absolute', top: 0, right: 0}} name='trash' size={32} onPress={() => handleDelete()} />
 				</View>
 				<TextInput
-					onChangeText={(value) => setActivity({ name:  value, calories: activity.calories})}
+					onChangeText={(value) => setFood({ ...food, name: value})}
 					placeholderTextColor='lightgray'
-					value={activity.name}
+					value={food.name}
 					style={styles.inputField}
 				/>
-				<Text>{modalData.isFood ? "Calories Gained" : "Calories Burned"}</Text>
+				<Text>Calories Gained</Text>
 				<TextInput
 				style={[styles.inputField]}
 					placeholder="Enter Calories"
 					keyboardType="numbers-and-punctuation"
-					value={activity.calories?.toString().replace('-', '')}
-					onChangeText={(value) => handleOnChangeCalories(value)}
+					value={food.calories?.toString().replace('-', '')}
+					onChangeText={(value) => handleCalorieChange(value)}
+				/>
+				<Text>Protein Eaten</Text>
+				<TextInput
+				style={styles.inputField}
+					placeholder="Enter Calories"
+					keyboardType="numbers-and-punctuation"
+					value={food?.protein?.toString()}
+					onChangeText={handleProteinChange}
 				/>
 				<View style={{ flexDirection: 'row', gap: 4, justifyContent: 'center'}}>
-					<Button1 disabled={isFetching} style={[styles.buttonDestructive, { width: '45%'}]} title="Cancel" onPress={() => setModalData(undefined)} />
+					<Button1 disabled={isFetching} style={[styles.buttonDestructive, { width: '45%'}]} title="Cancel" onPress={() => setShowEditModal(false)} />
 					<Button1 disabled={isFetching} style={[styles.button, { width: '45%'}]} title="Update" onPress={() => handleUpdateActivity()}  />
 				</View>
 			</View>
