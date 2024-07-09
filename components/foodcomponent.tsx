@@ -1,4 +1,4 @@
-import { Pressable, StyleSheet } from 'react-native'
+import { Pressable, StyleSheet, View } from 'react-native'
 import React, { useState }  from 'react'
 import { colors } from '@/constants/ui/colors'
 import Text from './ui/text'
@@ -18,8 +18,8 @@ export default function FoodComponent({ food, index, selectedDayData, userData, 
 		onPress={() => setShowEditModal(true)}
 			style={localStyles.container}>
 			<Text>{food.name}</Text>
-			<Text>{food.protein} protein</Text>
-			<Text style={{ color: colors.destructive}}>{Math.abs(food.calories)}</Text>
+			<Text>{food.protein} g</Text>
+			<Text style={{ color: colors.destructive, flexDirection: 'row'}}>{Math.abs(food.calories)} Cal</Text>
 			{showEditModal && <EditFood
 			userData={userData}
 			selectedDayData={selectedDayData}
@@ -31,16 +31,16 @@ export default function FoodComponent({ food, index, selectedDayData, userData, 
 
 const localStyles = StyleSheet.create({
 	container: {
-		flexDirection: 'row',
-		justifyContent: 'space-between',
-		alignSelf: 'center',
-		width: '100%',
-		height: 42,
-		borderRadius: 10,
-		alignItems: 'center',
-		paddingLeft: 12,
-		marginBottom: 10,
-		paddingRight: 12,
-		backgroundColor: colors.backgroundother
+	  flexDirection: 'row',
+	  justifyContent: 'space-between',
+	  alignSelf: 'center',
+	  width: '100%',
+	  height: 42,
+	  borderRadius: 10,
+	  alignItems: 'center',
+	  paddingLeft: 12,
+	  marginBottom: 10,
+	  paddingRight: 12,
+	  backgroundColor: colors.secondary
 	}
-})
+});

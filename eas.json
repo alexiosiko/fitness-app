@@ -10,7 +10,12 @@
     "preview": {
       "distribution": "internal"
     },
-    "production": {}
+	"production": {
+		"env": {
+			"CLERK_PUBLISHABLE_KEY": "${CLERK_PUBLISHABLE_KEY}",
+			"EXPO_PUBLIC_API_DOMAIN": "https://us-central1-fitness-server-1-b09f7.cloudfunctions.net/app"
+		}
+	}
   },
   "submit": {
     "production": {}

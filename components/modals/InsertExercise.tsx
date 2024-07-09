@@ -48,10 +48,8 @@ export default function InsertExercise({ setShowExerciseModal: setShowExercizeMo
 			throw Error("Food name is empty")
 		if (exercise.calories == 0) 
 			throw Error("Calories cannot be 0")
-		if (exercise.timeInMinutes == 0) 
-			throw Error("timeInMinutes cannot be 0")
 		if (selectedDate == undefined)
-			console.error("Selected date is undefined");
+			throw Error("Selected date is undefined");
 	}
 	const handleInsertActivity = async () => {
 		if (isFetching)
@@ -86,11 +84,12 @@ export default function InsertExercise({ setShowExerciseModal: setShowExercizeMo
 		presentationStyle='pageSheet'
 		animationType="slide"
 		>
-		<SafeAreaView
+		<View
 		onTouchStart={() => Keyboard.dismiss()}
-		 style={{ height: "100%", width: '100%', backgroundColor: colors.background }}>
-			<View style={{ margin: 10, gap: 20 }}>
-				<Text style={[styles.header, { marginBottom: '10%' }]}>Add New Excersize</Text>
+		style={[styles.background, { justifyContent: 'flex-start', gap: 24 }]}>
+			<Text style={[styles.header, { marginBottom: '10%' }]}>Add New Excersize</Text>
+			<View>
+
 				<Text>Exercise Name</Text>
 				<TextInput
 					onChangeText={name => setExercize({ ...exercise, name: name })}
@@ -99,6 +98,8 @@ export default function InsertExercise({ setShowExerciseModal: setShowExercizeMo
 					placeholderTextColor='lightgray'
 					placeholder={`Excersize name`}
 				/>
+			</View>
+			<View>
 				<Text>Calories Burned</Text>
 				<TextInput
 				style={styles.inputField}
@@ -107,6 +108,8 @@ export default function InsertExercise({ setShowExerciseModal: setShowExercizeMo
 					value={exercise.calories.toString()}
 					onChangeText={handleCalorieChange}
 				/>
+			</View>
+			<View>
 				<Text>Time (In Minutes)</Text>
 				<TextInput
 				style={styles.inputField}
@@ -115,12 +118,12 @@ export default function InsertExercise({ setShowExerciseModal: setShowExercizeMo
 					value={exercise.timeInMinutes.toString()}
 					onChangeText={handleTimeInMinutesChange}
 				/>
-				<View style={{ flexDirection: 'row', gap: 4, justifyContent: 'center'}}>
-					<Button1 disabled={isFetching} style={[styles.buttonDestructive, { width: '45%'}]} title="Cancel" onPress={() => setShowExercizeModal(false)} />
-					<Button1 disabled={isFetching} style={[styles.button, { width: '45%'}]} title="Add" onPress={() => handleInsertActivity()}  />
-				</View>
 			</View>
-		</SafeAreaView>
+			<View style={{ flexDirection: 'row', gap: 4, justifyContent: 'center'}}>
+				<Button1 disabled={isFetching} style={[styles.buttonDestructive, { width: '45%'}]} title="Cancel" onPress={() => setShowExercizeModal(false)} />
+				<Button1 disabled={isFetching} style={[styles.button, { width: '45%'}]} title="Add" onPress={() => handleInsertActivity()}  />
+			</View>
+		</View>
 		<Toast />
 	</Modal>
   )

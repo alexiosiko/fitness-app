@@ -78,7 +78,6 @@ export default function EditFood({ getUserData, setShowEditModal,  index, userDa
 		try {
 			validateForm();
 
-			console.log(process.env.EXPO_PUBLIC_API_DOMAIN + "/users/foods/update");
 			const res = await axios.put(process.env.EXPO_PUBLIC_API_DOMAIN + "/users/foods/update", {
 				userId: userData!.userId,
 				food: food,
@@ -128,7 +127,7 @@ export default function EditFood({ getUserData, setShowEditModal,  index, userDa
 			<View style={{ margin: 10, gap: 20 }}>
 				<View style={{ flexDirection: 'row', position: 'relative' }}>
 					<Text style={[styles.header, { marginRight: 'auto', marginLeft: 'auto' }]}>Edit Food</Text>
-					<FontAwesome disabled={isFetching} style={{ position: 'absolute', top: 0, right: 0}} name='trash' size={32} onPress={() => handleDelete()} />
+					<FontAwesome disabled={isFetching} style={{ position: 'absolute', top: 0, right: 0}} name='trash' color="white" size={32} onPress={() => handleDelete()} />
 				</View>
 				<TextInput
 					onChangeText={(value) => setFood({ ...food, name: value})}

@@ -2,7 +2,6 @@ import { Pressable, StyleSheet } from 'react-native'
 import React, { useState }  from 'react'
 import { colors } from '@/constants/ui/colors'
 import Text from './ui/text'
-import { ModalEditDateType } from './modals/EditFood'
 import { Day, Exercise, Food, UserDataType } from '@/constants/types/user'
 import EditExercise from './modals/EditExercise'
 
@@ -20,8 +19,8 @@ export default function ExersizeComponent({ exercise, index, selectedDayData, us
 			onPress={() => setShowExerciseModal(true)}
 			style={localStyles.container}>
 			<Text>{exercise.name}</Text>
-			<Text>for {exercise.timeInMinutes} mins</Text>
-			<Text style={{ color: colors.primary }}>{exercise.calories}</Text>
+			<Text>{exercise.timeInMinutes} mins</Text>
+			<Text style={{ color: colors.accent }}>{exercise.calories} Cal</Text>
 			{showExerciseModal && <EditExercise
 			userData={userData}
 			index={index}
@@ -45,6 +44,6 @@ const localStyles = StyleSheet.create({
 		paddingLeft: 12,
 		marginBottom: 10,
 		paddingRight: 12,
-		backgroundColor: colors.backgroundother
+		backgroundColor: colors.secondary
 	}
 })

@@ -4,6 +4,7 @@ import { ClerkProvider, useAuth } from '@clerk/clerk-expo';
 import { Slot, SplashScreen, useRouter, useSegments } from 'expo-router';
 import { useFonts } from 'expo-font';
 const CLERK_PUBLISHABLE_KEY = process.env.EXPO_PUBLIC_CLERK_PUBLISHABLE_KEY;
+
 // Cache the Clerk JWT
 const tokenCache = {
 	async getToken(key: string) {
@@ -28,7 +29,8 @@ const InitialLayout = () => {
 	const router = useRouter();
 
 	const [fontsLoaded] = useFonts({
-		SpaceMono: require('../assets/fonts/SpaceMono-Regular.ttf'),
+		RobotoMonoRegular: require('../assets/fonts/RobotoMono-Regular.ttf'),
+		RobotoMonoMedium: require('../assets/fonts/RobotoMono-Medium.ttf'),
 		SalsaRegular: require('../assets/fonts/Salsa-Regular.ttf'),
 	});
 
@@ -58,8 +60,9 @@ const InitialLayout = () => {
 		return undefined;
 
 
-	return <Slot />
-
+	return (
+		<Slot />
+	)
 };
 
 const RootLayoutNav = () => {

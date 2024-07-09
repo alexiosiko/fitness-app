@@ -4,7 +4,7 @@ import axios from 'axios';
 import { useEffect, useState } from 'react'
 import Toast from 'react-native-toast-message';
 import { useSettings } from '../state/settings';
-import { isSameDay, normalizeDateString } from '@/constants/lib/day';
+import { isSameDay } from '@/constants/lib/day';
 
 export default function useUserData() {
 	const { user } = useUser();
@@ -31,7 +31,7 @@ export default function useUserData() {
 			Toast.show({
 				type: 'error',
 				text1: "Error",
-				text2: "Error getting user data :("
+				text2: e.message
 			})
 		} finally {
 			setIsFetching(false);
@@ -53,7 +53,7 @@ export default function useUserData() {
 			};
 		}
 		return dayData;
-	}
+	} // BigPotato12
 	
 	const getRemainingCalories = (day: Day): number | null => {
 		if (!userData || !day?.foods)
@@ -72,11 +72,11 @@ export default function useUserData() {
 		}))
 		return eatenCalories ;//userData.dailyCalorieTarget - userData.eaten + userData.burned;
 	}
-	const getBurnedCalories = (day: Day): number | null => {
-		if (!userData || !day)
+	const getBurnedCalories = (dayData: Day): number | null => {
+		if (!userData || !dayData)
 			return null;
 		let burnedCalories = 0;
-		day.exercises.forEach((exercise => {
+		dayData.exercises.forEach((exercise => {
 			burnedCalories += exercise.calories
 		}))
 		return burnedCalories ;//userData.dailyCalorieTarget - userData.eaten + userData.burned;
@@ -87,6 +87,12 @@ export default function useUserData() {
 			return;
 		getUserData();
 	}, [])
+
+	// useEffect(() => {
+	// 	if (isFetching)
+	// 		return;
+	// 	getUserData();
+	// }, [selectedDate])
 	
 
 	useEffect(() => {

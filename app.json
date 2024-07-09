@@ -1,8 +1,8 @@
 {
   "expo": {
-    "name": "fitness",
+    "name": "CalorieDiary - Track Your Diet",
     "slug": "fitness",
-    "version": "1.0.0",
+    "version": "1.0.3",
     "orientation": "portrait",
     "icon": "./assets/images/icon.png",
     "scheme": "myapp",
@@ -14,7 +14,8 @@
     },
     "ios": {
       "supportsTablet": true,
-      "bundleIdentifier": "com.anonymous.fitness"
+      "bundleIdentifier": "com.anonymous.fitness",
+	  "buildNumber": "3" 
     },
     "android": {
       "adaptiveIcon": {
@@ -25,19 +26,19 @@
     },
     "web": {
       "bundler": "metro",
-	  "output": "server",
+      "output": "server",
       "favicon": "./assets/images/favicon.png"
     },
     "plugins": [
       "expo-router",
       "expo-secure-store",
-	  [
+      [
         "expo-font",
         {
           "fonts": [
-			"./assets/fonts/SpaceMono-Regular.ttf",
-			"./assets/fonts/Salsa-Regular.ttf"
-		]
+            "./assets/fonts/SpaceMono-Regular.ttf",
+            "./assets/fonts/Salsa-Regular.ttf"
+          ]
         }
       ]
     ],
@@ -51,6 +52,12 @@
       "eas": {
         "projectId": "09092701-9583-4647-9cf9-6018ab6dc985"
       }
+    },
+    "runtimeVersion": {
+      "policy": "appVersion"
+    },
+    "updates": {
+      "url": "https://u.expo.dev/09092701-9583-4647-9cf9-6018ab6dc985"
     }
   }
 }

@@ -135,7 +135,7 @@ export default function EditExercise({ getUserData, setShowEditModal,  index, us
 			<View style={{ margin: 10, gap: 20 }}>
 				<View style={{ flexDirection: 'row', position: 'relative' }}>
 					<Text style={[styles.header, { marginRight: 'auto', marginLeft: 'auto' }]}>Edit Exercise</Text>
-					<FontAwesome disabled={isFetching} style={{ position: 'absolute', top: 0, right: 0}} name='trash' size={32} onPress={() => handleDelete()} />
+					<FontAwesome disabled={isFetching} style={{ position: 'absolute', top: 0, right: 0}} color="white" name='trash' size={32} onPress={() => handleDelete()} />
 				</View>
 				<TextInput
 					onChangeText={name => setExercise({ ...exercise, name: name })}

@@ -1,19 +1,19 @@
 import Button1 from '@/components/ui/button1';
+import Text from '@/components/ui/text';
 import { colors } from '@/constants/ui/colors';
 import { styles } from '@/constants/ui/styles';
 import { useSignIn } from '@clerk/clerk-expo';
-import { Link } from 'expo-router';
+import { Link, router, useRouter } from 'expo-router';
 import React, { useState } from 'react';
-import { View, StyleSheet, TextInput, Pressable, Text, Alert, Button } from 'react-native';
+import { View, TextInput, Pressable, TouchableWithoutFeedback, Keyboard } from 'react-native';
 import Spinner from 'react-native-loading-spinner-overlay';
 
 const login = () => {
 	const { signIn, setActive, isLoaded } = useSignIn();
-
-	const [emailAddress, setEmailAddress] = useState<string>(process.env.EXPO_PUBLIC_MY_EMAIL as string);
-	const [password, setPassword] = useState<string>(process.env.EXPO_PUBLIC_MY_PASSWORD as string);
+	const [emailAddress, setEmailAddress] = useState<string>("");
+	const [password, setPassword] = useState<string>("");
 	const [loading, setLoading] = useState(false);
-
+	const router = useRouter();
 	const onSignInPress = async () => {
 		if (!isLoaded) {
 			return;
@@ -35,35 +35,32 @@ const login = () => {
 	};
 
 	return (
-		<View style={[styles.container, { gap: 12}]}>
+		<View style={[styles.background, { gap: 75}]}>
 			<Spinner visible={loading} />
-
-			<TextInput
-				autoCapitalize="none"
-				placeholder="Email"
-				value={emailAddress}
-				onChangeText={setEmailAddress}
-				style={styles.inputField}
-			/>
-			<TextInput
-				placeholder="Password"
-				value={password}
-				onChangeText={setPassword}
-				secureTextEntry
-				style={styles.inputField}
-			/>
-
-			<Button1 style={styles.button} onPress={() => onSignInPress()} title='Sign In'></Button1>
-			<Link href="/reset" asChild style={{ alignItems: 'center'}}>
-				<Pressable>
-					<Text>Forgot password?</Text>
-				</Pressable>
-			</Link>
-			<Link href="/register" asChild style={{ alignItems: 'center'}}>
-				<Pressable>
-					<Text>Create Account</Text>
-				</Pressable>
-			</Link>
+			<View style={{ gap: 12 }}>
+				<TextInput
+				keyboardType='default'
+					autoCapitalize="none"
+					placeholderTextColor={colors.foreground}
+					placeholder="Email"
+					value={emailAddress}
+					onChangeText={setEmailAddress}
+					style={styles.inputField}
+				/>
+				<TextInput
+					placeholder="Password"
+					placeholderTextColor={colors.foreground}
+					value={password}
+					onChangeText={setPassword}
+					secureTextEntry
+					style={styles.inputField}
+				/>
+				<Button1 textStyle={{ color: colors.accentforeground }} style={styles.buttonAccent} onPress={() => onSignInPress()} title='Sign In'></Button1>
+			</View>
+			<View style={{ gap: 12 }}>
+				<Button1 onPress={() => router.push('/register')} textStyle={{ color: colors.foreground }} style={[styles.button, { width: 250 }]} title='Create Account' />
+				<Button1 onPress={() => router.push('/reset')} textStyle={{ color: colors.foreground }} style={[styles.buttonGhost, { width: 250 }]} title='Forgot Password?' />
+			</View>
 		</View>
 	);
 };

@@ -1,0 +1,51 @@
+[
+	{
+		"foods": [
+			{
+				"name": "Pizza",
+				"calories": 200,
+				"protein": 20
+			},
+			{
+				"name": "Breakfast",
+				"calories": 1000,
+				"protein": 20
+			}
+		],
+		"exercises": [
+			{
+				"calories": 300,
+				"name": "Running",
+				"timeInMinutes": 30
+			},
+			{
+				"calories": 300,
+				"name": "Hiking",
+				"timeInMinutes": 30
+			}
+		],
+		"date": "2024-06-21T00:00:00.000Z"
+	},
+	{
+		"foods": [
+			{
+				"name": "burger",
+				"calories": 1000,
+				"protein": 12
+			},
+			{
+				"name": "pizza",
+				"calories": 24,
+				"protein": 0
+			}
+		],
+		"exercises": [
+			{
+				"calories": 400,
+				"name": "running",
+				"timeInMinutes": 12
+			}
+		],
+		"date": "2024-06-30T00:14:14.000Z"
+	}
+]

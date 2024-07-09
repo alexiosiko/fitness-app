@@ -1,11 +1,8 @@
 import { Tabs } from 'expo-router';
-import { FontAwesome, Ionicons } from '@expo/vector-icons';
+import {  Ionicons } from '@expo/vector-icons';
 import { Pressable } from 'react-native';
 import { useAuth } from '@clerk/clerk-expo';
 import { colors } from '@/constants/ui/colors';
-import Toast from 'react-native-toast-message';
-import { AntDesign } from '@expo/vector-icons';
-import { Feather } from '@expo/vector-icons';
 import { Octicons } from '@expo/vector-icons';
 export const LogoutButton = () => {
 	const { signOut } = useAuth();
@@ -27,39 +24,85 @@ const TabsPage = () => {
 	return (
 		<Tabs screenOptions={{
 			tabBarStyle: {
-				backgroundColor: colors.navbackground
+				backgroundColor: colors.background
 			},
-			headerStyle: {
-				backgroundColor: colors.background,
-			},
-			headerTintColor: colors.foreground,
+
 		}}>
-		  <Tabs.Screen
+			{/* <Tabs.Screen
+			  name="stats"
+			  options={{
+				headerTitleAlign: 'center',
+				tabBarIconStyle: {
+					top: 8,
+				},
+				headerTitleStyle: {
+					fontSize: 32
+				},
+				title: 'Statistics',
+				tabBarLabel: '',
+				tabBarIcon: ({ color }) => <Ionicons name="stats-chart-outline" size={32} color="black" />,
+			  }}
+			  redirect={!isSignedIn}
+			/> */}
+			<Tabs.Screen
+			  name="calendar"
+			  options={{
+				headerTitleAlign: 'center',
+				headerStyle: {
+					backgroundColor: colors.background
+				},
+				tabBarIconStyle: {
+					top: 8,
+					backgroundColor: colors.foreground
+				},
+				headerTitleStyle: {
+					color: colors.foreground
+				},
+				title: 'Calendar',
+				tabBarLabel: '',
+				tabBarIcon: ({ color }) => <Octicons name="calendar" size={28} color="white" />,
+			  }}
+			  redirect={!isSignedIn}
+			/>
+			<Tabs.Screen
+			  name="home"
+			  options={{
+				headerTitleAlign: 'center',	
+				tabBarIconStyle: {
+					top: 8,
+				},
+				headerStyle: {
+					backgroundColor: colors.background,
+				},
+				headerTitleStyle: {
+					color: colors.foreground
+				},
+				title: 'Home',
+				tabBarLabel: '',
+				tabBarIcon: ({ color }) => <Octicons name="home" size={28} color="white" />,
+			  }}
+			  redirect={!isSignedIn}
+			/>
+			
+			<Tabs.Screen
 			name="settings"
 			options={{
 				headerTitleAlign: 'center',
 				tabBarIconStyle: {
 					top: 8,
 				},
+				headerStyle: {
+					backgroundColor: colors.background
+				},
+				headerTitleStyle: {
+					color: colors.foreground
+				},
 				title: 'Settings',
 				tabBarLabel: '',
-				tabBarIcon: ({ color }) => <Octicons name="gear" size={32} color="black" />,
+				tabBarIcon: ({ color }) => <Octicons name="gear" size={28} color="white" />,
 			}}
 			redirect={!isSignedIn}
 		  />
-			<Tabs.Screen
-			  name="home"
-			  options={{
-				headerTitleAlign: 'center',
-				tabBarIconStyle: {
-					top: 8,
-				},
-				title: 'Home',
-				tabBarLabel: '',
-				tabBarIcon: ({ color }) => <Octicons name="home" size={32} color="black" />,
-			  }}
-			  redirect={!isSignedIn}
-			/>
 		</Tabs>
 	  );
 };

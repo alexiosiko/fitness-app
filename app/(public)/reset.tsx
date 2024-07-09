@@ -2,6 +2,8 @@ import { View, StyleSheet, TextInput, Button } from 'react-native';
 import React, { useState } from 'react';
 import { Stack } from 'expo-router';
 import { useSignIn } from '@clerk/clerk-expo';
+import { styles } from '@/constants/ui/styles';
+import { colors } from '@/constants/ui/colors';
 
 const PwReset = () => {
 	const [emailAddress, setEmailAddress] = useState('');
@@ -41,7 +43,7 @@ const PwReset = () => {
 	};
 
 	return (
-		<View style={styles.container}>
+		<View style={styles.background}>
 			<Stack.Screen options={{ headerBackVisible: !successfulCreation }} />
 
 			{!successfulCreation && (
@@ -49,6 +51,7 @@ const PwReset = () => {
 					<TextInput
 						autoCapitalize="none"
 						placeholder="simon@galaxies.dev"
+						placeholderTextColor={colors.foreground}
 						value={emailAddress}
 						onChangeText={setEmailAddress}
 						style={styles.inputField}
@@ -62,8 +65,10 @@ const PwReset = () => {
 				<>
 					<View>
 						<TextInput
+
 							value={code}
 							placeholder="Code..."
+							placeholderTextColor={colors.foreground}
 							style={styles.inputField}
 							onChangeText={setCode}
 						/>
@@ -71,6 +76,7 @@ const PwReset = () => {
 							placeholder="New password"
 							value={password}
 							onChangeText={setPassword}
+							placeholderTextColor={colors.foreground}
 							secureTextEntry
 							style={styles.inputField}
 						/>
@@ -81,26 +87,5 @@ const PwReset = () => {
 		</View>
 	);
 };
-
-const styles = StyleSheet.create({
-	container: {
-		flex: 1,
-		justifyContent: 'center',
-		padding: 20
-	},
-	inputField: {
-		marginVertical: 4,
-		height: 50,
-		borderWidth: 1,
-		borderColor: '#6c47ff',
-		borderRadius: 4,
-		padding: 10,
-		backgroundColor: '#fff'
-	},
-	button: {
-		margin: 8,
-		alignItems: 'center'
-	}
-});
 
 export default PwReset;

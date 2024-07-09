@@ -10,9 +10,9 @@ export default function Text({ children, style, light }: {
   return (
 	<CustomText style={[{
 		textAlign: 'center',
-		fontFamily: 'SalsaRegular',
+		fontFamily: 'RobotoMonoMedium',
 		fontSize: 20,
-		color: light ? (colors.backgroundother) : colors.foreground
+		color: light ? (colors.secondarybackground) : colors.foreground
 	}, style]}>{children}</CustomText>
   )
 }

@@ -1,25 +1,24 @@
 import useUserData from '@/components/hooks/useUserData';
 import { useSettings } from '@/components/state/settings';
-import Button1 from '@/components/ui/button1';
 import Text from '@/components/ui/text'
 import { colors } from '@/constants/ui/colors';
 import { styles } from '@/constants/ui/styles'
 import React, { useState } from 'react'
-import { ActivityIndicator, SafeAreaView, ScrollView, View } from 'react-native'
+import { ActivityIndicator, Pressable, SafeAreaView, ScrollView, StyleSheet, View } from 'react-native'
 import Toast from 'react-native-toast-message';
 import { Circle } from 'react-native-progress';
 import InsertFood from '@/components/modals/InsertFood';
-import EditFood, { ModalEditDateType } from '@/components/modals/EditFood';
 import FoodComponent from '@/components/foodcomponent';
 import ExersizeComponent from '@/components/exercisecomponent';
 import InsertExercise from '@/components/modals/InsertExercise';
+import { Ionicons } from '@expo/vector-icons';
+import AntDesign from '@expo/vector-icons/AntDesign';
 
 export default function Home() {
 	const { userData, getEatenCalories, getBurnedCalories, selectedDayData, getRemainingCalories, getUserData } = useUserData();
 	const [ showFoodModal, setShowFoodModal] = useState<boolean>(false);
 	const [ showExerciseModal, setShowExerciseModal] = useState<boolean>(false);
-	const [ editActivityModalData, setEditActivityModalData] = useState<ModalEditDateType | undefined>(undefined);
-	const { selectedDate } = useSettings();
+	const { selectedDate, incrementSelectedDate, decrementSelectedDate } = useSettings();
 	const getCaloriesProgress = (): number => {
 		if (selectedDayData == undefined)
 			return 0;
@@ -31,47 +30,88 @@ export default function Home() {
 
 		return numerator / denomerator;
 	}
-
-	if (!userData)
-		return <ActivityIndicator />
+	// const testFetch = async () => {
+	// 	try {
+	// 		let url = "https://us-central1-fitness-server-1-b09f7.cloudfunctions.net/app/test";
+	// 		console.log('Fetching from:', url);
+	// 		const res = await axios.get(url);
+	// 		console.log('Response:', res.data);
+	// 	} catch (e: any) {
+	// 		console.error('Fetch error:', e.message);
+	// 	}
+	// }
+	
+	// useEffect(() => {
+	// 	testFetch();
+	// }, [])
 	return (
-		<SafeAreaView style={[{ backgroundColor: colors.background}, { height: '100%' }]}>
-			<View style={{alignItems: 'center', gap: 24, margin: 10, height: '100%'}}>
-				{/* <Text style={{ marginTop: 24 }}>Daily Calorie Target: {userData ? userData?.dailyCalorieTarget : <ActivityIndicator /> }</Text> */}
-				<Text>{selectedDate ? selectedDate.toDateString() : <ActivityIndicator /> }</Text>
-				<View style={{ flexDirection: 'row', width: '100%', borderRadius: 20, padding: 10, gap: 40, justifyContent: 'space-evenly', backgroundColor: colors.primary, height: 170, alignItems: 'center' }}>
-					<View>
-						<Text light style={styles.header}>{selectedDayData ? getEatenCalories(selectedDayData) : <ActivityIndicator />}</Text>
-						<Text light>Eaten</Text>
+		<SafeAreaView style={styles.background}>
+			{/* <LinearGradient 
+				colors={[colors.gradienttop, colors.gradientbottom]}
+			> */}
+				<View style={{ flexDirection: 'row', alignItems: 'center', justifyContent: 'space-around'}}>
+					<AntDesign onPress={() => decrementSelectedDate()} name="caretleft" size={24} color="white" />
+					<View style={{ }}>
+						<Text style={[ { padding: 24, fontSize: 24},]}>{selectedDate ? selectedDate.toUTCString() : <ActivityIndicator /> }</Text>
 					</View>
-					<View >
-						<Text light style={styles.header}>{selectedDayData ? getRemainingCalories(selectedDayData) : <ActivityIndicator />}</Text>
-						<Text light >Remaining</Text>
-						<Circle style={{ position: 'absolute', right: -24, bottom: -42}} unfilledColor={colors.unfilledcolor} color={colors.background} progress={getCaloriesProgress()} size={145} borderWidth={0} />
-					</View>
-					<View>
-						<Text light style={styles.header}>{selectedDayData ? getBurnedCalories(selectedDayData) : <ActivityIndicator />}</Text>
-						<Text light>Burned</Text>
-					</View>
+					<AntDesign onPress={() => incrementSelectedDate()} name="caretright" size={24} color="white" />
 				</View>
-				<Text>Todays Summary</Text>
-				<ScrollView style={{ overflow: 'scroll', flexGrow: 1, margin: 4}}>
-					{selectedDayData?.foods?.map((food, index) => 
-						<FoodComponent getUserData={getUserData} userData={userData} selectedDayData={selectedDayData} index={index} food={food} key={index} />
-					)}
-					{selectedDayData?.exercises?.map((exercise, index) => 
-						<ExersizeComponent exercise={exercise} getUserData={getUserData} index={index} selectedDayData={selectedDayData} userData={userData} key={index} />
-					)}
+				<ScrollView> 
+					<View style={localStyles.subContainer}>
+						<View>
+							<Text style={styles.header}>{selectedDayData ? getEatenCalories(selectedDayData) : <ActivityIndicator />}</Text>
+							<Text>Eaten</Text>
+						</View>
+						<View>
+							<Text style={styles.header}>{selectedDayData ? getRemainingCalories(selectedDayData) : <ActivityIndicator />}</Text>
+							<Text>Remaining</Text>
+							<Circle thickness={4} style={{ position: 'absolute', right: -18, bottom: -40}} unfilledColor={colors.background
+							} color={colors.accent} progress={getCaloriesProgress()} size={145} borderWidth={0} />
+						</View>
+						<View>
+							<Text style={styles.header}>{selectedDayData ? getBurnedCalories(selectedDayData) : <ActivityIndicator />}</Text>
+							<Text>Burned</Text>
+						</View>
+					</View>
+					{ userData && 
+					<View style={{ gap: 24, marginTop: 24}}>
+						<Pressable onPress={() => setShowFoodModal(true)} style={{ flexDirection: 'row', justifyContent: 'center', alignItems: 'center' }}>
+							<Text>Foods</Text>
+							<Ionicons name='add' size={32} color="white" />
+						</Pressable>
+						<View style={{ minHeight: 100 }}>
+							{selectedDayData?.foods?.map((food, index) => 
+								<FoodComponent getUserData={getUserData} userData={userData} selectedDayData={selectedDayData} index={index} food={food} key={index} />
+							)}
+						</View>
+						<Pressable onPress={() => setShowExerciseModal(true)} style={{ flexDirection: 'row', justifyContent: 'center', alignItems: 'center' }}>
+							<Text>Exercises</Text>
+							<Ionicons name='add' size={32} color="white" />
+						</Pressable>
+						<View style={{ minHeight: 100}}>
+							{selectedDayData?.exercises?.map((exercise, index) => 
+								<ExersizeComponent exercise={exercise} getUserData={getUserData} index={index} selectedDayData={selectedDayData} userData={userData} key={index} />
+							)}
+						</View>
+					</View>}
+					{showExerciseModal && userData && <InsertExercise getUserData={getUserData} setShowExerciseModal={setShowExerciseModal}  userData={userData} />}
+					{showFoodModal && userData && <InsertFood userData={userData} setShowFoodModal={setShowFoodModal} getUserData={getUserData} />}
 				</ScrollView>
-				<View style={{ flexDirection: 'row', gap: 4, marginBottom: 24 }}>
-					<Button1 style={[styles.button, { width: '40%'}]} title='Add Excersize' onPress={() => setShowExerciseModal(true)} />
-					<Button1 style={[styles.buttonDestructive, { width: '40%'}]} title='Add Food' onPress={() => setShowFoodModal(true)} />
-				</View>
-				{showFoodModal && <InsertFood userData={userData} setShowFoodModal={setShowFoodModal} getUserData={getUserData} />}
-				{showExerciseModal && <InsertExercise getUserData={getUserData} setShowExerciseModal={setShowExerciseModal}  userData={userData} />}
-			</View>
-			<Toast />
+				<Toast />
+			{/* </LinearGradient> */}
 		</SafeAreaView>
 	)
 }
 
+
+const localStyles = StyleSheet.create({
+	subContainer: {
+		flexDirection: 'row',
+		borderRadius: 20,
+		backgroundColor: colors.secondary,
+		gap: 40,
+		justifyContent: 'space-evenly',
+		height: 180,
+		alignItems: 'center',
+	}
+})
